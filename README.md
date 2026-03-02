@@ -5,9 +5,9 @@ The server accepts multiple clients simultaneously and allows users to communica
 
 ## Features
 
-- Multi-client support using **Python threads**
-- **Broadcast messages** to all connected clients
-- **Custom usernames**: clients can set their nickname using `/nick YourName`
+- Multi-client support using Python threads
+- Broadcast messages to all connected clients
+- Custom usernames: clients can set their nickname using `/nick YourName`
 - Server logs all messages, connections, disconnections, and username changes
 
 ## How it works
