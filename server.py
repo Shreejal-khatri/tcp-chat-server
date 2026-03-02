@@ -1,24 +1,38 @@
 import socket
+#run code in parallel
+import threading
+
 HOST = "0.0.0.0"
 PORT = 5000
 
-#TCP using IPv4. 
+def handle_client(conn, addr):
+    print(f"[NEW CONNECTION] {addr} connected.")
+
+    while True:
+        try:
+            data = conn.recv(1024)
+            if not data:
+                print(f"[DISCONNECTED] {addr}")
+                break
+
+            message = data.decode()
+            print(f"[{addr}] {message}")
+
+        except ConnectionResetError:
+            print(f"[ERROR] {addr} connection reset.")
+            break
+
+    conn.close()
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-#Server being staged live at port 5000
 server_socket.bind((HOST, PORT))
+server_socket.listen()
 
-#Ready for connection and can handle 1 connection 
-server_socket.listen(1)
+print(f"[LISTENING] Server listening on {HOST}:{PORT}")
 
-#blocking call
-conn, addr = server_socket.accept()
-
-#Read up to 1024 bytes from the client
-data = conn.recv(1024)
-
-#data is in bytes so decode() turns bytes into a string
-print(f"Recievd: {data.decode()}")
-
-conn.close()
-server_socket.close()
+#Keeps the server running
+while True:
+    #One thread Per Client
+    conn, addr = server_socket.accept()
+    thread = threading.Thread(target=handle_client, args=(conn, addr))
+    thread.start()
